@@ -1,6 +1,8 @@
 import torch
 import os
 
+from torch.utils.tensorboard import SummaryWriter
+
 from generate_data import generate_data, save_data, load_data, test_function_analytics
 
 def main():
@@ -33,6 +35,8 @@ def main():
         
     model = MyMLP()
 
+    writer = SummaryWriter("logs")
+
     # Define the loss function
     loss_mse = torch.nn.MSELoss()
 
@@ -49,7 +53,8 @@ def main():
         optimizer.step()
         if epoch % 10 == 0:
             print(f'Epoch {epoch}/{num_epochs}, Loss: {loss.item()}')
- 
+            writer.add_scalar('Loss/train', loss.item(), epoch)
+
 
     # Save the model
     model_dir = './model/'
@@ -64,11 +69,13 @@ def main():
     #print(model.state_dict())
 
     # Test the model
-    x_test = 2*torch.randn(5, 3)
+    x_test = 2*torch.rand(5, 3)
     y_test = model(x_test)
     y_real = test_function_analytics(x_test)
     print(y_test-y_real)
-    print(torch.mean(torch.abs(y_test-y_real)))
+    test_loss = loss_mse(y_test, y_real)
+    print("Test loss: ", test_loss)
+    print(torch.mean(torch.abs(y_test-y_real))) 
 
 
 if __name__ == "__main__":

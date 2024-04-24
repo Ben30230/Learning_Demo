@@ -12,8 +12,8 @@ def generate_data() -> tuple[torch.Tensor, torch.Tensor]:
     # Generate some data
     # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    num_train = 10000
-    x = 2*torch.randn(num_train, 3)
+    num_train = 50000
+    x = 5*torch.rand(num_train, 3)
     y = test_function_analytics(x)
     return x, y
 
